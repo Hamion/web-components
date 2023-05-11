@@ -11,7 +11,7 @@
 
 	<button onclick="openDialogComponent()">Click Me</button>
 
-	<dialog-component>
+	<dialog-component actions="{action_1: () => alert('Hello World')}">
 		<h2 slot="header">Hello World</h2>
 		<p slot="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita maiores, ut nesciunt quod, quas eligendi vero nemo voluptatum nam sequi placeat hic accusantium amet harum dolores voluptates rerum laudantium doloribus!</p>
 		<button slot="action_1">Options</button>
@@ -20,9 +20,8 @@
 	</dialog-component>
 	
 	<script>
-		function openDialogComponent(dialogComponent) {
-			dialogComponent = typeof dialogComponent === 'number' ? dialogComponent : 0;
-			document.querySelectorAll('dialog-component')[dialogComponent].open();
+		function openDialogComponent() {
+			document.querySelector('dialog-component').visible = true;
 		}
 	</script>
 </body>

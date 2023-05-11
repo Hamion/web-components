@@ -2,7 +2,8 @@ import { LitElement, html, css } from 'https://cdn.jsdelivr.net/gh/lit/dist@2/co
 
 class WebDialog extends LitElement {
 	static properties = {
-		show: { type: Bool, attribute: 'show' },
+		visible: { type: Boolean, reflect: true },
+		actions: { type: Object, reflect: true },
 	};
 
 	static styles = css`
@@ -10,8 +11,8 @@ class WebDialog extends LitElement {
 			border-radius: calc(0.0625rem * 16);
 			background-color: #FFFBFE;
 			justify-content: center;
-			align-items: center;
 			pointer-events: none;
+			align-items: center;
 			visibility: hidden;
 			position: absolute;
 			color: #1C1B1F;
@@ -22,12 +23,12 @@ class WebDialog extends LitElement {
 			left: 0;
 			top: 0;
 		}
-		:host-context(dialog-component[show="true"]) { pointer-events: all; }
-		:host-context(dialog-component[show="true"]) .scrim { animation: openScrim 400ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards; }
-		:host-context(dialog-component[show="true"]) .container { animation: openContainer 400ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards; animation-delay: 200ms; }
-		:host-context(dialog-component[show="false"]) { pointer-events: none; }
-		:host-context(dialog-component[show="false"]) .scrim { animation: closeScrim 200ms cubic-bezier(0.3, 0, 0.8, 0.15) forwards; animation-delay: 100ms; opacity: .4; }
-		:host-context(dialog-component[show="false"]) .container { animation: closeContainer 200ms cubic-bezier(0.3, 0, 0.8, 0.15) forwards; }
+		:host-context(dialog-component[visible="true"]) { pointer-events: all; }
+		:host-context(dialog-component[visible="true"]) .scrim { animation: openScrim 400ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards; }
+		:host-context(dialog-component[visible="true"]) .container { animation: openContainer 400ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards; animation-delay: 200ms; }
+		:host-context(dialog-component[visible="false"]) { pointer-events: none; }
+		:host-context(dialog-component[visible="false"]) .scrim { animation: closeScrim 200ms cubic-bezier(0.3, 0, 0.8, 0.15) forwards; animation-delay: 100ms; opacity: .4; }
+		:host-context(dialog-component[visible="false"]) .container { animation: closeContainer 200ms cubic-bezier(0.3, 0, 0.8, 0.15) forwards; }
 		@keyframes openScrim {
 			from { opacity: 0; }
 			to { opacity: .4; }
@@ -96,7 +97,8 @@ class WebDialog extends LitElement {
 
 	constructor() {
 		super();
-		this.show = false;
+		this.visible = false;
+		this.actions = {};
 	}
 
 	render() {
@@ -120,11 +122,15 @@ class WebDialog extends LitElement {
 	}
 
 	open() {
-		this.setAttribute('show', true);
+		this.visible = true;
 	}
 
 	close(action) {
-		this.setAttribute('show', false);
+		this.setAttribute('visible', false);
+		const callback = this.getAttribute(`action_${action}`) || {};
+		if (callback != {}) {
+			callback['action_' + action];
+		}
 	}
 }
 window.customElements.define('dialog-component', WebDialog);
